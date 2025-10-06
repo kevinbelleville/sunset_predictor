@@ -75,6 +75,6 @@ def store_prediction(cloud_cover, cloud_low, cloud_mid, cloud_high,
 
 store_prediction(cloud_cover, cloud_low, cloud_mid, cloud_high,
                     humidity, visibility, vpd, pm2_5, pm10, aod,
-                    score, sunset_time)
+                    sunset_score_today, sunset_time)
 
 print(f"Sunset at {sunset_time.hour}:{sunset_time.minute}\nCloud cover: {cloud_cover}%\nHumidity: {humidity}%\nVisibility: {visibility}m\nVPD: {vpd} kPa\nPM2.5: {pm2_5} µg/m³\nPM10: {pm10} µg/m³\nAOD: {aod}\nSunset Quality Score: {sunset_score_today}/100\n Rating: {sunset_score_today_rating}")
