@@ -2,6 +2,7 @@ import json
 import requests
 from datetime import datetime
 import sunset_score
+import psycopg2
 
 api_url = "https://api.open-meteo.com/v1/forecast?latitude=37.3394&longitude=-121.895&daily=sunrise,sunset&hourly=temperature_2m,relative_humidity_2m,precipitation_probability,precipitation,rain,showers,visibility,cloud_cover_low,cloud_cover_mid,cloud_cover_high,cloud_cover,vapour_pressure_deficit,uv_index,is_day,sunshine_duration&timezone=America%2FLos_Angeles&forecast_days=1"
 
@@ -42,5 +43,38 @@ sunset_score_today = sunset_score.score_sunset(cloud_cover, cloud_low, cloud_mid
 
 ratings = ["Poor", "Fair", "Good", "Great", "Amazing"]
 sunset_score_today_rating = ratings[int(sunset_score_today//20)]
+
+
+def store_prediction(cloud_cover, cloud_low, cloud_mid, cloud_high,
+                    humidity, visibility, vpd, pm2_5, pm10, aod,
+                    score, sunset_time):
+    conn = psycopg2.connect(
+        dbname="sunset_predictions",
+        user="sunset_user",
+        password="sunrise",
+        host="localhost",
+    )
+    cur = conn.cursor()
+
+    cur.execute("""
+        INSERT INTO predictions (
+            timestamp, latitude, longitude, sunset_time,
+            cloud_cover, cloud_low, cloud_mid, cloud_high,
+            humidity, visibility, vpd, pm2_5, pm10, aod,
+            predicted_score
+        ) VALUES (NOW(), %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+    """, (
+        37.3394, -121.895, sunset_time,
+        cloud_cover, cloud_low, cloud_mid, cloud_high,
+        humidity, visibility, vpd, pm2_5, pm10, aod, score
+    ))
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+store_prediction(cloud_cover, cloud_low, cloud_mid, cloud_high,
+                    humidity, visibility, vpd, pm2_5, pm10, aod,
+                    score, sunset_time)
 
 print(f"Sunset at {sunset_time.hour}:{sunset_time.minute}\nCloud cover: {cloud_cover}%\nHumidity: {humidity}%\nVisibility: {visibility}m\nVPD: {vpd} kPa\nPM2.5: {pm2_5} µg/m³\nPM10: {pm10} µg/m³\nAOD: {aod}\nSunset Quality Score: {sunset_score_today}/100\n Rating: {sunset_score_today_rating}")
