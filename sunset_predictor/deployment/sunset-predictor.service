@@ -1,0 +1,11 @@
+[Unit]
+Description=Sunset Quality Predictor
+After=network.target
+
+[Service]
+Type=oneshot
+User=ec2-user
+WorkingDirectory=/home/ec2-user/sunset_predictor
+ExecStart=/usr/bin/python3 /home/ec2-user/sunset_predictor/weather.py
+StandardOutput=append:/home/ec2-user/sunset_predictor/cron.log
+StandardError=append:/home/ec2-user/sunset_predictor/cron.log

@@ -1,0 +1,10 @@
+[Unit]
+Description=Run Sunset Predictor Daily
+Requires=sunset-predictor.service
+
+[Timer]
+OnCalendar=*-*-* 01:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
