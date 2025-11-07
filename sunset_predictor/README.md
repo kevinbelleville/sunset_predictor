@@ -33,6 +33,31 @@ Combines weather forecasting data (cloud cover, humidity, visibility) with air q
 - Database schema design
 - Domain-specific algorithm development
 
+## Usage
+
+### Run for any location
+
+The script accepts command-line arguments to predict sunset quality for any location:
+
+```bash
+# Default location (San Jose, CA)
+python3 weather.py
+
+# Specify coordinates
+python3 weather.py --lat 40.7128 --lon -74.0060 --location "New York City"
+
+# Alternative argument names
+python3 weather.py --latitude 51.5074 --longitude -0.1278 --location "London, UK"
+
+# View help
+python3 weather.py --help
+```
+
+### Parameters
+- `--lat` / `--latitude`: Latitude coordinate (default: 37.3394)
+- `--lon` / `--lng` / `--longitude`: Longitude coordinate (default: -121.895)
+- `--location`: Location name for display (default: "San Jose, CA")
+
 ## Deployment
 
 ### Database Setup
